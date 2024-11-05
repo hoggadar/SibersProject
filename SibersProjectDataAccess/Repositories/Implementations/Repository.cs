@@ -18,27 +18,30 @@ namespace SibersProjectDataAccess.Repositories.Implementations
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<TEntity?> GetById(int id)
+        public async Task<TEntity?> GetById(long id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task Create(TEntity entity)
+        public async Task<TEntity> Create(TEntity entity)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
+            var user = await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
+            return user.Entity;
         }
 
-        public async Task Update(TEntity entity)
+        public async Task<TEntity> Update(TEntity entity)
         {
-            _context.Set<TEntity>().Update(entity);
+            var user = _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync();
+            return user.Entity;
         }
 
-        public async Task Delete(TEntity entity)
+        public async Task<TEntity> Delete(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
+            var user = _context.Set<TEntity>().Remove(entity);
             await _context.SaveChangesAsync();
+            return user.Entity;
         }
     }
 }

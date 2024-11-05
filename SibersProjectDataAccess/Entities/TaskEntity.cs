@@ -9,8 +9,8 @@ namespace SibersProjectDataAccess.Entities
         public string Title { get; set; } = null!;
         public long AuthorId { get; set; }
         public UserEntity? Author { get; set; }
-        /*public long PerformerId { get; set; }
-        public UserEntity? Performer { get; set; }*/
+        public long PerformerId { get; set; }
+        public UserEntity? Performer { get; set; }
         public StatusEnum Status { get; set; }
         public long ProjectId { get; set; }
         public ProjectEntity? Project { get; set; }

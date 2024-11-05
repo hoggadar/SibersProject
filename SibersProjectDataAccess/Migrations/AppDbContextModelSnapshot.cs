@@ -72,6 +72,9 @@ namespace SibersProjectDataAccess.Migrations
                     b.Property<long>("AuthorId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("PerformerId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
@@ -88,6 +91,8 @@ namespace SibersProjectDataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("PerformerId");
 
                     b.HasIndex("ProjectId");
 
@@ -169,16 +174,24 @@ namespace SibersProjectDataAccess.Migrations
                     b.HasOne("SibersProjectDataAccess.Entities.UserEntity", "Author")
                         .WithMany("Tasks")
                         .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SibersProjectDataAccess.Entities.UserEntity", "Performer")
+                        .WithMany()
+                        .HasForeignKey("PerformerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SibersProjectDataAccess.Entities.ProjectEntity", "Project")
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Author");
+
+                    b.Navigation("Performer");
 
                     b.Navigation("Project");
                 });
@@ -188,13 +201,13 @@ namespace SibersProjectDataAccess.Migrations
                     b.HasOne("SibersProjectDataAccess.Entities.UserEntity", "Employee")
                         .WithMany("EmployeeProjects")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SibersProjectDataAccess.Entities.ProjectEntity", "Project")
                         .WithMany("EmployeeProjects")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Employee");

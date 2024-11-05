@@ -14,6 +14,5 @@ namespace SibersProjectDataAccess.Entities
         public RoleEnum Role { get; set; }
         public ICollection<UserProjectEntity>? EmployeeProjects { get; set; }
         public ICollection<TaskEntity>? Tasks { get; set; }
-        //public ICollection<TaskEntity>? AssignedTasks { get; set; }
     }
 }

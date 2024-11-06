@@ -30,7 +30,7 @@ namespace SibersProjectBusiness.Services
             return await _userRepo.GetByEmail(email);
         }
 
-        public async Task<UserEntity> Create(CreateUserDto dto)
+        public async Task<UserEntity> Create(UserDto dto)
         {
             if (!Enum.TryParse<RoleEnum>(dto.Role, true, out var role))
             {
@@ -48,9 +48,21 @@ namespace SibersProjectBusiness.Services
             return await _userRepo.Create(newUser);
         }
 
-        public async Task<UserEntity> Update(UserEntity entity)
+        public async Task<UserEntity?> Update(long id, UserDto dto)
         {
-            return await _userRepo.Update(entity);
+            var user = await _userRepo.GetById(id);
+            if (!Enum.TryParse<RoleEnum>(dto.Role, true, out var role))
+            {
+                throw new ArgumentException($"Invalid role: {dto.Role}");
+            }
+            if (user == null) return null;
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.Patronymic = dto.Patronymic;
+            user.Email = dto.Email;
+            user.Password = dto.Password;
+            user.Role = role;
+            return await _userRepo.Update(user);
         }
 
         public async Task<UserEntity?> Delete(long id)

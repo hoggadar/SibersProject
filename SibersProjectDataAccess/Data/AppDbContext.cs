@@ -28,13 +28,13 @@ namespace SibersProjectDataAccess.Data
 
             modelBuilder.Entity<TaskEntity>()
                 .HasOne(t => t.Author)
-                .WithMany(u => u.Tasks)
+                .WithMany(u => u.CreatedTasks)
                 .HasForeignKey(t => t.AuthorId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<TaskEntity>()
                 .HasOne(t => t.Performer)
-                .WithMany(u => u.Tasks)
+                .WithMany(u => u.AssignedTasks)
                 .HasForeignKey(t => t.PerformerId)
                 .OnDelete(DeleteBehavior.NoAction);
 

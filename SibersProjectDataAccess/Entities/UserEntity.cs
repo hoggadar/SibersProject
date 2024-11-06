@@ -13,6 +13,7 @@ namespace SibersProjectDataAccess.Entities
         public string Password { get; set; } = null!;
         public RoleEnum Role { get; set; }
         public ICollection<UserProjectEntity>? EmployeeProjects { get; set; }
-        public ICollection<TaskEntity>? Tasks { get; set; }
+        public ICollection<TaskEntity>? CreatedTasks { get; set; }
+        public ICollection<TaskEntity>? AssignedTasks { get; set; }
     }
 }

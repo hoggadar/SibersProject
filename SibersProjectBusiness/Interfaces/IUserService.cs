@@ -8,8 +8,8 @@ namespace SibersProjectBusiness.Interfaces
         Task<IEnumerable<UserEntity>> GetAll();
         Task<UserEntity?> GetById(long id);
         Task<UserEntity?> GetByEmail(string email);
-        Task<UserEntity> Create(CreateUserDto dto);
-        Task<UserEntity> Update(UserEntity entity);
+        Task<UserEntity> Create(UserDto dto);
+        Task<UserEntity?> Update(long id, UserDto dto);
         Task<UserEntity?> Delete(long id);
     }
 }

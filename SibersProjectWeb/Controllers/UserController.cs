@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SibersProjectBusiness.DTOs.User;
 using SibersProjectBusiness.Interfaces;
 
 namespace SibersProjectWeb.Controllers
@@ -19,6 +20,29 @@ namespace SibersProjectWeb.Controllers
         {
             var users = await _userService.GetAll();
             return Ok(users);
+        }
+
+        [HttpPost("create-user")]
+        public async Task<IActionResult> Create([FromBody] UserDto dto)
+        {
+            var createdUser = await _userService.Create(dto);
+            return Ok(createdUser);
+        }
+
+        [HttpPut("update-user/{id}")]
+        public async Task<IActionResult> Update([FromBody] UserDto dto, long id)
+        {
+            var updatedUser = await _userService.Update(id, dto);
+            if (updatedUser == null) return BadRequest("User not found");
+            return Ok(updatedUser);
+        }
+
+        [HttpDelete("delete-user/{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var deletedUser = await _userService.Delete(id);
+            if (deletedUser == null) return BadRequest("User not found");
+            return Ok(deletedUser);
         }
     }
 }

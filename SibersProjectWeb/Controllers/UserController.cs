@@ -22,6 +22,13 @@ namespace SibersProjectWeb.Controllers
             return Ok(users);
         }
 
+        [HttpGet("get-users-by-project/{projectId}")]
+        public async Task<IActionResult> GetUsersByProjectId(long projectId)
+        {
+            var users = await _userService.GetUsersByProjectId(projectId);
+            return Ok(users);
+        }
+
         [HttpPost("create-user")]
         public async Task<IActionResult> Create([FromBody] UserDto dto)
         {

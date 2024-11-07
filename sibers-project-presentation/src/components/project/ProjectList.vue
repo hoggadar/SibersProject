@@ -72,6 +72,10 @@ const cancelUpdating = () => {
             >
               Delete
             </button>
+            <router-link :to="{ path: `/project/${project.id}` }"
+                         class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+              Подробнее
+            </router-link>
           </div>
         </td>
       </tr>

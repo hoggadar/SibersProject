@@ -44,8 +44,15 @@ namespace SibersProjectWeb.Controllers
             return Ok(result);
         }
 
+        [HttpPost("delete-employee-from-project")]
+        public async Task<IActionResult> DeleteEmployee([FromBody] UserProjectDto dto)
+        {
+            var result = await _projectService.DeleteEmployeeFromProject(dto);
+            return Ok(result);
+        }
+
         [HttpPut("update-project/{id}")]
-        public async Task<IActionResult> Update([FromBody] CreateProjectDto dto, long id)
+        public async Task<IActionResult> Update([FromBody] UpdateProjectDto dto, long id)
         {
             var updatedUser = await _projectService.Update(id, dto);
             if (updatedUser == null) return BadRequest("Project not found");

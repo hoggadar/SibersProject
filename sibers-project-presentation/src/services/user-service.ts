@@ -38,6 +38,15 @@ export const userService = {
             throw error;
         }
     },
+    async getUsersByProjectId(projectId: number): Promise<User[]> {
+        try {
+            const response = await axios.get<User[]>(`http://localhost:5004/api/User/get-users-by-project/${projectId}`);
+            return response.data;
+        } catch (error) {
+            console.error('Ошибка при получении пользователей проекта:', error);
+            throw error;
+        }
+    },
     async createUser(newUser: UserDto): Promise<User> {
         try
         {

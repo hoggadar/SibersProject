@@ -43,6 +43,12 @@ const handleCancelUpdating = () => {
 
 const onUserCreated = () => fetchUsers();
 
+const onUserUpdated = () => {
+  isUpdating.value = false;
+  selectedUser.value = null;
+  fetchUsers();
+};
+
 onMounted(fetchUsers);
 </script>
 
@@ -51,6 +57,7 @@ onMounted(fetchUsers);
     <div v-if="isUpdating && selectedUser">
       <UpdateUserForm
           :user="selectedUser"
+
       />
     </div>
     <div v-else>

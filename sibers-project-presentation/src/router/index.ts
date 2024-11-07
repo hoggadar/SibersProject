@@ -4,6 +4,7 @@ import UserView from "../views/UserView.vue";
 import ProjectView from "../views/ProjectView.vue";
 import LoginView from "../views/LoginView.vue";
 import SignupView from "../views/SignupView.vue";
+import ProjectDetailView from "../views/ProjectDetailView.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -20,6 +21,12 @@ const routes: Array<RouteRecordRaw> = [
         path: '/project',
         name: 'project',
         component: ProjectView,
+    },
+    {
+        path: '/project/:projectId',
+        name: 'project-users',
+        component: ProjectDetailView,
+        props: true,
     },
     {
         path: '/login',

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {CreateProjectDto, projectService} from "../../services/project-service.ts";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {userService} from "../../services/user-service.ts";
 
 const newProject = ref<CreateProjectDto>({
   title: '',
@@ -10,8 +11,18 @@ const newProject = ref<CreateProjectDto>({
   priority: 0,
 });
 
+const users = ref<User[]>([]);
 const message = ref<string | null>(null);
 const error = ref<string | null>(null);
+
+onMounted(async () => {
+  try {
+    users.value = await userService.getAllUsers(); // Загружаем пользователей
+  } catch (err) {
+    console.error(err);
+    error.value = 'Ошибка при загрузке пользователей.';
+  }
+});
 
 const submitForm = async () => {
   try {
@@ -60,8 +71,13 @@ const resetForm = () => {
 
       <div class="flex flex-col">
         <div>
-          <label for="directorId" class="block">ID Директора:</label>
-          <input v-model.number="newProject.directorId" type="number" id="directorId" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <label for="directorId" class="block">Директор:</label>
+          <select v-model.number="newProject.directorId" id="directorId" class="w-full border border-gray-300 rounded px-3 py-2">
+            <option value="" disabled selected>Выберите директора</option>
+            <option v-for="user in users" :key="user.id" :value="user.id">
+              {{ user.lastName }} {{ user.firstName }} {{ user.patronymic }}
+            </option>
+          </select>
         </div>
 
         <div>

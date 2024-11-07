@@ -45,7 +45,7 @@ namespace SibersProjectBusiness.Services
             return await _projectRepo.Create(newProject);
         }
 
-        public async Task<ProjectEntity?> Update(long id, CreateProjectDto dto)
+        public async Task<ProjectEntity?> Update(long id, UpdateProjectDto dto)
         {
             var project = await _projectRepo.GetById(id);
             if (project == null) return null;
@@ -72,6 +72,14 @@ namespace SibersProjectBusiness.Services
                 ProjectId = dto.ProjectId,
             };
             await _userProjectRepo.Create(newUserProject);
+            return true;
+        }
+
+        public async Task<bool> DeleteEmployeeFromProject(UserProjectDto dto)
+        {
+            var userProject = await _userProjectRepo.GetByUserAndProject(dto.EmployeeId, dto.ProjectId);
+            if (userProject == null) return false;
+            await _userProjectRepo.Delete(userProject);
             return true;
         }
     }

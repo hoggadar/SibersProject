@@ -4,6 +4,7 @@ import {User, RoleEnum, userService, UserDto} from '../../services/user-service.
 
 const props = defineProps<{
   user: User;
+  onUserUpdate: () => void;
 }>();
 
 const updatedUser = ref<UserDto>({
@@ -32,7 +33,7 @@ watch(() => props.user, (newValue) => {
 const submitForm = async () => {
   try {
     await userService.updateUser(props.user.id, updatedUser.value);
-    console.log(updatedUser.value);
+    props.onUserUpdate();
     message.value = 'Пользователь успешно обновлен!';
     error.value = null;
     resetForm();

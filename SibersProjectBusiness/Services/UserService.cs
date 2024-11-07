@@ -20,6 +20,11 @@ namespace SibersProjectBusiness.Services
             return await _userRepo.GetAll();
         }
 
+        public async Task<IEnumerable<UserEntity>> GetUsersByProjectId(long projectId)
+        {
+            return await _userRepo.GetUsersByProjectId(projectId);
+        }
+
         public async Task<UserEntity?> GetById(long id)
         {
             return await _userRepo.GetById(id);

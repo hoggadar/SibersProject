@@ -6,6 +6,7 @@ namespace SibersProjectBusiness.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<UserEntity>> GetAll();
+        Task<IEnumerable<UserEntity>> GetUsersByProjectId(long projectId);
         Task<UserEntity?> GetById(long id);
         Task<UserEntity?> GetByEmail(string email);
         Task<UserEntity> Create(UserDto dto);

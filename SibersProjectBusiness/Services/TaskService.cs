@@ -1,4 +1,4 @@
-﻿using SibersProjectBusiness.DTOs;
+﻿using SibersProjectBusiness.DTOs.Task;
 using SibersProjectBusiness.Interfaces;
 using SibersProjectDataAccess.Entities;
 using SibersProjectDataAccess.Enums;
@@ -25,7 +25,7 @@ namespace SibersProjectBusiness.Services
             return await _taskRepo.GetById(id);
         }
 
-        public async Task<TaskEntity> Create(CreateTaskDto dto)
+        public async Task<TaskEntity> Create(TaskDto dto)
         {
             var task = new TaskEntity
             {

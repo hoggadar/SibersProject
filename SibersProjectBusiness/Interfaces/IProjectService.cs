@@ -12,6 +12,6 @@ namespace SibersProjectBusiness.Interfaces
         Task<ProjectEntity?> Update(long id, UpdateProjectDto dto);
         Task<ProjectEntity?> Delete(long id);
         Task<bool> AddEmployeeToProject(UserProjectDto dto);
-        Task<bool> DeleteEmployeeFromProject(UserProjectDto dto);
+        Task<bool> RemoveEmployeeFromProject(UserProjectDto dto);
     }
 }

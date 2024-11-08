@@ -75,7 +75,7 @@ namespace SibersProjectBusiness.Services
             return true;
         }
 
-        public async Task<bool> DeleteEmployeeFromProject(UserProjectDto dto)
+        public async Task<bool> RemoveEmployeeFromProject(UserProjectDto dto)
         {
             var userProject = await _userProjectRepo.GetByUserAndProject(dto.EmployeeId, dto.ProjectId);
             if (userProject == null) return false;

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SibersProjectBusiness.DTOs.Project;
 using SibersProjectBusiness.Interfaces;
 
@@ -44,10 +43,10 @@ namespace SibersProjectWeb.Controllers
             return Ok(result);
         }
 
-        [HttpPost("delete-employee-from-project")]
-        public async Task<IActionResult> DeleteEmployee([FromBody] UserProjectDto dto)
+        [HttpPost("remove-employee-from-project")]
+        public async Task<IActionResult> RemoveEmployee([FromBody] UserProjectDto dto)
         {
-            var result = await _projectService.DeleteEmployeeFromProject(dto);
+            var result = await _projectService.RemoveEmployeeFromProject(dto);
             return Ok(result);
         }
 

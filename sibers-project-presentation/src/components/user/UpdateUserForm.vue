@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref, watch} from 'vue';
-import {User, RoleEnum, userService, UserDto} from '../../services/user-service.ts';
+import {User, RoleEnum, UserDto} from '../../types/user-type';
+import {userApi} from "../../api/user-api.ts";
 
 const props = defineProps<{
   user: User;
@@ -32,7 +33,7 @@ watch(() => props.user, (newValue) => {
 
 const submitForm = async () => {
   try {
-    await userService.updateUser(props.user.id, updatedUser.value);
+    await userApi.updateUser(props.user.id, updatedUser.value);
     props.onUserUpdate();
     message.value = 'Пользователь успешно обновлен!';
     error.value = null;

@@ -24,7 +24,7 @@ namespace SibersProjectDataAccess.Data
                 .HasOne(up => up.Project)
                 .WithMany(p => p.EmployeeProjects)
                 .HasForeignKey(up => up.ProjectId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TaskEntity>()
                 .HasOne(t => t.Author)

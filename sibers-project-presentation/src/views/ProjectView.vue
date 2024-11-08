@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {Project, projectService} from "../services/project-service.ts";
+import { projectApi} from "../api/project-api.ts";
+import { Project } from "../types/project-type";
 import ProjectList from "../components/project/ProjectList.vue";
 import UpdateProjectForm from "../components/project/UpdateProjectForm.vue";
 import CreateProjectForm from "../components/project/CreateProjectForm.vue";
@@ -14,7 +15,7 @@ const selectedProject = ref<Project | null>(null);
 const fetchProjects = async () => {
   loading.value = true;
   try {
-    projects.value = await projectService.getAllProjects();
+    projects.value = await projectApi.getAllProjects();
   } catch (err) {
     error.value = 'Не удалось загрузить пользователей.';
   } finally {
@@ -24,7 +25,7 @@ const fetchProjects = async () => {
 
 const handleDeleteProject = async (projectToDelete: Project) => {
   try {
-    await projectService.deleteProject(projectToDelete.id);
+    await projectApi.deleteProject(projectToDelete.id);
     projects.value = projects.value.filter(project => project.id !== projectToDelete.id);
   } catch (err) {
     error.value = 'Ошибка при удалении пользователя.';

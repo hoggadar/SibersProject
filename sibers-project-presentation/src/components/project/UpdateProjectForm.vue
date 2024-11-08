@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {ProjectDto, projectService, UpdateProjectDto} from "../../services/project-service.ts";
+import { ProjectDto, UpdateProjectDto } from "../../types/project-type";
+import {projectApi} from "../../api/project-api.ts";
 import {ref, watch} from "vue";
 
 const props = defineProps<{
@@ -29,7 +30,7 @@ watch(() => props.project, (newValue) => {
 
 const submitForm = async () => {
   try {
-    await projectService.updateProject(props.project.id, updatedProject.value);
+    await projectApi.updateProject(props.project.id, updatedProject.value);
     console.log(updatedProject.value);
     message.value = 'Проект успешно обновлен!';
     error.value = null;

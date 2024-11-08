@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import {ref} from 'vue';
-import {UserDto, RoleEnum, userService} from '../../services/user-service.ts';
+import { ref } from 'vue';
+import { UserDto, RoleEnum } from '../../types/user-type';
+import { userApi } from '../../api/user-api.ts';
 
 const props = defineProps<{
   onUserCreated: () => void;
@@ -20,7 +21,7 @@ const error = ref<string | null>(null);
 
 const submitForm = async () => {
   try {
-    await userService.createUser(newUser.value);
+    await userApi.createUser(newUser.value);
     props.onUserCreated();
     message.value = 'Пользователь успешно добавлен!';
     error.value = null;
@@ -51,34 +52,68 @@ const resetForm = () => {
       <div class="flex flex-col">
         <div>
           <label for="firstName" class="block">Имя:</label>
-          <input v-model="newUser.firstName" type="text" id="firstName" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newUser.firstName"
+            type="text"
+            id="firstName"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
 
         <div>
           <label for="lastName" class="block">Фамилия:</label>
-          <input v-model="newUser.lastName" type="text" id="lastName" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newUser.lastName"
+            type="text"
+            id="lastName"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
 
         <div>
           <label for="patronymic" class="block">Отчество:</label>
-          <input v-model="newUser.patronymic" type="text" id="patronymic" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newUser.patronymic"
+            type="text"
+            id="patronymic"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
       </div>
 
       <div class="flex flex-col">
         <div>
           <label for="email" class="block">Email:</label>
-          <input v-model="newUser.email" type="email" id="email" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newUser.email"
+            type="email"
+            id="email"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
 
         <div>
           <label for="password" class="block">Пароль:</label>
-          <input v-model="newUser.password" type="password" id="password" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newUser.password"
+            type="password"
+            id="password"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
 
         <div>
           <label for="role" class="block">Роль:</label>
-          <select v-model="newUser.role" id="role" class="w-full border border-gray-300 rounded px-3 py-2">
+          <select
+            v-model="newUser.role"
+            id="role"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          >
             <option value="Director">Директор</option>
             <option value="ProjectManager">Менеджер проекта</option>
             <option value="Employee">Сотрудник</option>
@@ -87,7 +122,9 @@ const resetForm = () => {
       </div>
 
       <div class="col-span-2">
-        <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2">Добавить пользователя</button>
+        <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2">
+          Добавить пользователя
+        </button>
       </div>
     </form>
 
@@ -96,6 +133,4 @@ const resetForm = () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

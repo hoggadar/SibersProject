@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Project } from "../../services/project-service.ts";
+import { Project } from "../../types/project-type";
 import { ref } from "vue";
 
 const props = defineProps<{
@@ -53,29 +53,30 @@ const cancelUpdating = () => {
         <td class="py-2 px-4">{{ new Date(project.startDate).toLocaleDateString() }}</td>
         <td class="py-2 px-4">{{ new Date(project.endDate).toLocaleDateString() }}</td>
         <td class="py-2 px-4">{{ project.priority }}</td>
-        <td class="py-2 px-4 w-[220px] flex justify-center">
+        <td class="py-2 px-4 w-[420px] flex justify-center">
           <div v-if="updatingProjectId === project.id">
             <button @click="cancelUpdating()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Cancel</button>
           </div>
           <div v-else class="flex gap-2">
+            <router-link :to="{ path: `/project/${project.id}` }"
+                         class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+              Подробнее
+            </router-link>
             <button
                 :disabled="updatingProjectId !== null"
                 @click="startUpdating(project)"
                 class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded"
             >
-              Update
+              Редактировать
             </button>
             <button
                 :disabled="updatingProjectId !== null"
                 @click="props.onDelete(project)"
                 class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
             >
-              Delete
+              Удалить
             </button>
-            <router-link :to="{ path: `/project/${project.id}` }"
-                         class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-              Подробнее
-            </router-link>
+
           </div>
         </td>
       </tr>

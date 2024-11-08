@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import {CreateProjectDto, projectService} from "../../services/project-service.ts";
-import {onMounted, ref} from "vue";
-import {userService} from "../../services/user-service.ts";
+import { computed, onMounted, ref } from 'vue';
+import { User } from '../../types/user-type.ts';
+import { CreateProjectDto } from '../../types/project-type';
+import { userApi } from '../../api/user-api.ts';
+import { projectApi } from '../../api/project-api.ts';
 
 const newProject = ref<CreateProjectDto>({
   title: '',
@@ -12,21 +14,37 @@ const newProject = ref<CreateProjectDto>({
 });
 
 const users = ref<User[]>([]);
+const searchQuery = ref<string>('');
 const message = ref<string | null>(null);
 const error = ref<string | null>(null);
+const isFocused = ref<boolean>(false);
+const showSuggestions = computed(
+  () => isFocused.value && filteredUsers.value.length > 0
+);
 
-onMounted(async () => {
-  try {
-    users.value = await userService.getAllUsers(); // Загружаем пользователей
-  } catch (err) {
-    console.error(err);
-    error.value = 'Ошибка при загрузке пользователей.';
-  }
+const filteredUsers = computed(() => {
+  return users.value.filter((user) => {
+    const fullName =
+      `${user.lastName} ${user.firstName} ${user.patronymic}`.toLowerCase();
+    return fullName.includes(searchQuery.value.toLowerCase());
+  });
 });
+
+const selectDirector = (user: User) => {
+  newProject.value.directorId = user.id;
+  searchQuery.value = `${user.lastName} ${user.firstName} ${user.patronymic}`;
+  isFocused.value = false;
+};
+
+const handleBlur = () => {
+  setTimeout(() => {
+    isFocused.value = false;
+  }, 100);
+};
 
 const submitForm = async () => {
   try {
-    await projectService.createProject(newProject.value);
+    await projectApi.createProject(newProject.value);
     message.value = 'Проект успешно добавлен!';
     error.value = null;
     resetForm();
@@ -44,7 +62,18 @@ const resetForm = () => {
     directorId: 0,
     priority: 1,
   };
+  searchQuery.value = '';
+  isFocused.value = false;
 };
+
+onMounted(async () => {
+  try {
+    users.value = await userApi.getAllUsers();
+  } catch (err) {
+    console.error(err);
+    error.value = 'Ошибка при загрузке пользователей.';
+  }
+});
 </script>
 
 <template>
@@ -55,34 +84,73 @@ const resetForm = () => {
       <div class="flex flex-col">
         <div>
           <label for="title" class="block">Название проекта:</label>
-          <input v-model="newProject.title" type="text" id="title" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newProject.title"
+            type="text"
+            id="title"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
 
         <div>
           <label for="customerCompany" class="block">Заказчик:</label>
-          <input v-model="newProject.customerCompany" type="text" id="customerCompany" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newProject.customerCompany"
+            type="text"
+            id="customerCompany"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
 
         <div>
           <label for="performerCompany" class="block">Исполнитель:</label>
-          <input v-model="newProject.performerCompany" type="text" id="performerCompany" required class="w-full border border-gray-300 rounded px-3 py-2"/>
+          <input
+            v-model="newProject.performerCompany"
+            type="text"
+            id="performerCompany"
+            required
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          />
         </div>
       </div>
 
-      <div class="flex flex-col">
+      <div class="flex flex-col relative">
         <div>
           <label for="directorId" class="block">Директор:</label>
-          <select v-model.number="newProject.directorId" id="directorId" class="w-full border border-gray-300 rounded px-3 py-2">
-            <option value="" disabled selected>Выберите директора</option>
-            <option v-for="user in users" :key="user.id" :value="user.id">
-              {{ user.lastName }} {{ user.firstName }} {{ user.patronymic }}
-            </option>
-          </select>
+          <div>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Начните вводить ФИО..."
+              @focus="isFocused = true"
+              @blur="handleBlur"
+              class="w-full border border-gray-300 rounded px-3 py-2 mb-2"
+            />
+            <ul
+              v-if="showSuggestions"
+              class="absolute left-0 w-full border border-gray-300 rounded mt-1 bg-white z-10"
+            >
+              <li
+                v-for="user in filteredUsers"
+                :key="user.id"
+                @click="selectDirector(user)"
+                class="cursor-pointer hover:bg-gray-200 px-3 py-2"
+              >
+                {{ user.lastName }} {{ user.firstName }} {{ user.patronymic }}
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div>
           <label for="priority" class="block">Приоритет:</label>
-          <select v-model.number="newProject.priority" id="priority" class="w-full border border-gray-300 rounded px-3 py-2">
+          <select
+            v-model.number="newProject.priority"
+            id="priority"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+          >
             <option value="1">1 (Низкий)</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -93,7 +161,9 @@ const resetForm = () => {
       </div>
 
       <div class="col-span-2">
-        <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2">Добавить проект</button>
+        <button type="submit" class="bg-blue-500 text-white rounded px-4 py-2">
+          Добавить проект
+        </button>
       </div>
     </form>
 
@@ -102,6 +172,4 @@ const resetForm = () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

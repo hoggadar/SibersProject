@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import UserList from "../components/user/UserList.vue";
-import {User, userService} from "../services/user-service.ts";
-import {onMounted, ref} from "vue";
-import CreateUserForm from "../components/user/CreateUserForm.vue";
-import UpdateUserForm from "../components/user/UpdateUserForm.vue";
+import UserList from '../components/user/UserList.vue';
+import { userApi } from '../api/user-api.ts';
+import { User } from '../types/user-type';
+import { onMounted, ref } from 'vue';
+import CreateUserForm from '../components/user/CreateUserForm.vue';
+import UpdateUserForm from '../components/user/UpdateUserForm.vue';
 
 const users = ref<User[]>([]);
 const loading = ref<boolean>(true);
@@ -14,7 +15,7 @@ const selectedUser = ref<User | null>(null);
 const fetchUsers = async () => {
   loading.value = true;
   try {
-    users.value = await userService.getAllUsers();
+    users.value = await userApi.getAllUsers();
   } catch (err) {
     error.value = 'Не удалось загрузить пользователей.';
   } finally {
@@ -24,8 +25,8 @@ const fetchUsers = async () => {
 
 const handleDeleteUser = async (userToDelete: User) => {
   try {
-    await userService.deleteUser(userToDelete.id);
-    users.value = users.value.filter(user => user.id !== userToDelete.id);
+    await userApi.deleteUser(userToDelete.id);
+    users.value = users.value.filter((user) => user.id !== userToDelete.id);
   } catch (err) {
     error.value = 'Ошибка при удалении пользователя.';
   }
@@ -55,27 +56,20 @@ onMounted(fetchUsers);
 <template>
   <div class="p-6">
     <div v-if="isUpdating && selectedUser">
-      <UpdateUserForm
-          :user="selectedUser"
-
-      />
+      <UpdateUserForm :user="selectedUser" :on-user-update="onUserUpdated" />
     </div>
     <div v-else>
-      <CreateUserForm
-          :on-user-created="onUserCreated"
-      />
+      <CreateUserForm :on-user-created="onUserCreated" />
     </div>
     <UserList
-        :users="users"
-        :loading="loading"
-        :error="error"
-        :on-delete="handleDeleteUser"
-        :on-start-updating="handleStartUpdating"
-        :on-cancel-updating="handleCancelUpdating"
+      :users="users"
+      :loading="loading"
+      :error="error"
+      :on-delete="handleDeleteUser"
+      :on-start-updating="handleStartUpdating"
+      :on-cancel-updating="handleCancelUpdating"
     />
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

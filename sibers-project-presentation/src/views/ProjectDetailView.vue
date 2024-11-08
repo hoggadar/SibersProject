@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import ProjectDetail from "../components/project/detail/ProjectDetail.vue";
+import ProjectDetail from "../components/project/ProjectDetail.vue";
 </script>
 
 <template>

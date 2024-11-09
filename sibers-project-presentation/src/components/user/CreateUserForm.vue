@@ -3,6 +3,11 @@ import { ref } from 'vue';
 import { UserDto, RoleEnum } from '../../types/user-type';
 import { userApi } from '../../api/user-api.ts';
 
+/*
+const emit = defineEmits(['action-name-1', 'action-name-2', etc.])
+<Component @action-name-1="myEvent(prop)">
+ */
+
 const props = defineProps<{
   onUserCreated: () => void;
 }>();

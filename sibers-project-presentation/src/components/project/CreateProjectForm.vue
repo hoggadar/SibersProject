@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { User } from '../../types/user-type.ts';
 import { CreateProjectDto } from '../../types/project-type';
 import { userApi } from '../../api/user-api.ts';
@@ -14,33 +14,8 @@ const newProject = ref<CreateProjectDto>({
 });
 
 const users = ref<User[]>([]);
-const searchQuery = ref<string>('');
 const message = ref<string | null>(null);
 const error = ref<string | null>(null);
-const isFocused = ref<boolean>(false);
-const showSuggestions = computed(
-  () => isFocused.value && filteredUsers.value.length > 0
-);
-
-const filteredUsers = computed(() => {
-  return users.value.filter((user) => {
-    const fullName =
-      `${user.lastName} ${user.firstName} ${user.patronymic}`.toLowerCase();
-    return fullName.includes(searchQuery.value.toLowerCase());
-  });
-});
-
-const selectDirector = (user: User) => {
-  newProject.value.directorId = user.id;
-  searchQuery.value = `${user.lastName} ${user.firstName} ${user.patronymic}`;
-  isFocused.value = false;
-};
-
-const handleBlur = () => {
-  setTimeout(() => {
-    isFocused.value = false;
-  }, 100);
-};
 
 const submitForm = async () => {
   try {
@@ -62,8 +37,6 @@ const resetForm = () => {
     directorId: 0,
     priority: 1,
   };
-  searchQuery.value = '';
-  isFocused.value = false;
 };
 
 onMounted(async () => {
@@ -119,29 +92,14 @@ onMounted(async () => {
       <div class="flex flex-col relative">
         <div>
           <label for="directorId" class="block">Директор:</label>
-          <div>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Начните вводить ФИО..."
-              @focus="isFocused = true"
-              @blur="handleBlur"
-              class="w-full border border-gray-300 rounded px-3 py-2 mb-2"
-            />
-            <ul
-              v-if="showSuggestions"
-              class="absolute left-0 w-full border border-gray-300 rounded mt-1 bg-white z-10"
-            >
-              <li
-                v-for="user in filteredUsers"
-                :key="user.id"
-                @click="selectDirector(user)"
-                class="cursor-pointer hover:bg-gray-200 px-3 py-2"
-              >
-                {{ user.lastName }} {{ user.firstName }} {{ user.patronymic }}
-              </li>
-            </ul>
-          </div>
+          <v-autocomplete
+            v-model="newProject.directorId"
+            label="Выберите директора"
+            required
+            :items="users"
+            :item-title="'email'"
+            :item-value="'id'"
+          />
         </div>
 
         <div>

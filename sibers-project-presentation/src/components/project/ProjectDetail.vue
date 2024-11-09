@@ -97,15 +97,6 @@ onMounted(async () => {
           </ul>
         </div>
       </div>
-      <!--      <select-->
-      <!--        v-model="selectedUserId"-->
-      <!--        class="border border-gray-400 px-2 py-1 rounded"-->
-      <!--      >-->
-      <!--        <option value="" disabled selected>Выберите пользователя</option>-->
-      <!--        <option v-for="user in allUsers" :key="user.id" :value="user.id">-->
-      <!--          {{ user.lastName }} {{ user.lastName }} {{ user.patronymic }}-->
-      <!--        </option>-->
-      <!--      </select>-->
       <button
         @click="addUserToProject"
         class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"

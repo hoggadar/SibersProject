@@ -56,13 +56,14 @@ onMounted(fetchUsers);
 <template>
   <div class="p-6">
     <div v-if="isUpdating && selectedUser">
-      <UpdateUserForm :user="selectedUser" :on-user-update="onUserUpdated" />
+      <UpdateUserForm :user="selectedUser" @on-user-update="onUserUpdated" />
     </div>
     <div v-else>
       <CreateUserForm :on-user-created="onUserCreated" />
     </div>
     <UserList
       :users="users"
+      :selected-user-id="selectedUser?.id"
       :loading="loading"
       :error="error"
       :on-delete="handleDeleteUser"

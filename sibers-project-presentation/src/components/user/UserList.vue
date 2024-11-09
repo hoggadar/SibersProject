@@ -1,25 +1,27 @@
 <script setup lang="ts">
 import { User } from '../../types/user-type';
-import { ref } from 'vue';
 
-const props = defineProps<{
+interface IProps {
+  selectedUserId: number | undefined;
   users: User[];
   loading: boolean;
   error: string | null;
   onDelete: (user: User) => void;
   onStartUpdating: (user: User) => void;
   onCancelUpdating: () => void;
-}>();
+}
 
-const updatingUserId = ref<number | null>(null);
+const props = defineProps<IProps>();
+
+//const updatingUserId = ref<number | null>(null);
 
 const startUpdating = (user: User) => {
-  updatingUserId.value = user.id;
+  //updatingUserId.value = user.id;
   props.onStartUpdating(user);
 };
 
 const cancelUpdating = () => {
-  updatingUserId.value = null;
+  //updatingUserId.value = null;
   props.onCancelUpdating();
 };
 </script>
@@ -57,7 +59,7 @@ const cancelUpdating = () => {
           <td class="py-2 px-4">{{ user.email }}</td>
           <td class="py-2 px-4">{{ user.role }}</td>
           <td class="py-2 px-4 w-[274px] flex justify-center">
-            <div v-if="updatingUserId === user.id">
+            <div v-if="selectedUserId === user.id">
               <button
                 @click="cancelUpdating()"
                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -67,14 +69,14 @@ const cancelUpdating = () => {
             </div>
             <div v-else class="flex gap-2">
               <button
-                :disabled="updatingUserId !== null"
+                :disabled="!!selectedUserId"
                 @click="startUpdating(user)"
                 class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded"
               >
                 Редиктировать
               </button>
               <button
-                :disabled="updatingUserId !== null"
+                :disabled="!!selectedUserId"
                 @click="props.onDelete(user)"
                 class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >

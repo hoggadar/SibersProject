@@ -1,5 +1,5 @@
 import { User, UserDto } from '../types/user-type.ts';
-import { BASE_API } from './api.ts';
+import BASE_API from './api.ts';
 
 export const userApi = {
   async getAllUsers(): Promise<User[]> {

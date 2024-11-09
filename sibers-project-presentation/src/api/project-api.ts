@@ -5,7 +5,7 @@ import {
   RemoveEmployeeFromProjectDto,
   UpdateProjectDto,
 } from '../types/project-type.ts';
-import { BASE_API } from './api.ts';
+import BASE_API from './api.ts';
 
 export const projectApi = {
   async getAllProjects(): Promise<Project[]> {

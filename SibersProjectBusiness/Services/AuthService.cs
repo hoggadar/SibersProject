@@ -6,12 +6,14 @@ namespace SibersProjectBusiness.Services
     {
         public bool VerifyPassword(string password, string passwordHash)
         {
-            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            //return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            return (password == passwordHash);
         }
 
         public string HashPassword(string password)
         {
-            return BCrypt.Net.BCrypt.HashPassword(password);
+            //return BCrypt.Net.BCrypt.HashPassword(password);
+            return password;
         }
     }
 }

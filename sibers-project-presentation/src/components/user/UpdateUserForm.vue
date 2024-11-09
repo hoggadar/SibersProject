@@ -17,7 +17,6 @@ const updatedUser = ref<UserDto>({
   password: '',
   role: RoleEnum.Employee,
 });
-
 const message = ref<string | null>(null);
 const error = ref<string | null>(null);
 

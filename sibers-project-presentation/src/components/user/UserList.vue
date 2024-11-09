@@ -6,23 +6,22 @@ interface IProps {
   users: User[];
   loading: boolean;
   error: string | null;
-  onDelete: (user: User) => void;
-  onStartUpdating: (user: User) => void;
-  onCancelUpdating: () => void;
 }
 
 const props = defineProps<IProps>();
 
-//const updatingUserId = ref<number | null>(null);
+const emit = defineEmits<{
+  (e: 'delete', user: User): void;
+  (e: 'start-updating', user: User): void;
+  (e: 'cancel-updating'): void;
+}>();
 
 const startUpdating = (user: User) => {
-  //updatingUserId.value = user.id;
-  props.onStartUpdating(user);
+  emit('start-updating', user);
 };
 
 const cancelUpdating = () => {
-  //updatingUserId.value = null;
-  props.onCancelUpdating();
+  emit('cancel-updating');
 };
 </script>
 
@@ -77,7 +76,7 @@ const cancelUpdating = () => {
               </button>
               <button
                 :disabled="!!selectedUserId"
-                @click="props.onDelete(user)"
+                @click="() => emit('delete', user)"
                 class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >
                 Удалить

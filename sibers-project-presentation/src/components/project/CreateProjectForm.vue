@@ -4,6 +4,9 @@ import { User } from '../../types/user-type.ts';
 import { CreateProjectDto } from '../../types/project-type';
 import { userApi } from '../../api/user-api.ts';
 import { projectApi } from '../../api/project-api.ts';
+import { useDropzone } from 'vue3-dropzone';
+
+const emit = defineEmits(['on-project-create']);
 
 const newProject = ref<CreateProjectDto>({
   title: '',
@@ -12,14 +15,31 @@ const newProject = ref<CreateProjectDto>({
   directorId: 0,
   priority: 0,
 });
-
 const users = ref<User[]>([]);
+const files = ref<File[]>([]);
 const message = ref<string | null>(null);
 const error = ref<string | null>(null);
 
+const fetchUsers = async () => {
+  try {
+    users.value = await userApi.getAllUsers();
+  } catch (err) {
+    console.error(err);
+    error.value = 'Ошибка при загрузке пользователей.';
+  }
+};
+
 const submitForm = async () => {
   try {
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(newProject.value));
+    files.value.forEach((file) => {
+      formData.append('files', file);
+    });
+    console.log(files);
+
     await projectApi.createProject(newProject.value);
+    emit('on-project-create');
     message.value = 'Проект успешно добавлен!';
     error.value = null;
     resetForm();
@@ -37,16 +57,16 @@ const resetForm = () => {
     directorId: 0,
     priority: 1,
   };
+  files.value = [];
 };
 
-onMounted(async () => {
-  try {
-    users.value = await userApi.getAllUsers();
-  } catch (err) {
-    console.error(err);
-    error.value = 'Ошибка при загрузке пользователей.';
-  }
+const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+  onDrop: (acceptedFiles) => {
+    files.value.push(...acceptedFiles);
+  },
 });
+
+onMounted(fetchUsers);
 </script>
 
 <template>
@@ -115,6 +135,32 @@ onMounted(async () => {
             <option value="4">4</option>
             <option value="5">5 (Высокий)</option>
           </select>
+        </div>
+      </div>
+
+      <div class="col-span-2">
+        <label class="block">Загрузить PDF файлы:</label>
+        <div>
+          <div v-bind="getRootProps()">
+            <input v-bind="getInputProps()" />
+            <p v-if="isDragActive">Drop the files here ...</p>
+            <p v-else>
+              Drag 'n' drop some files here, or click to select files
+            </p>
+          </div>
+          <button @click="open">Open</button>
+        </div>
+        <div class="col-span-2 mt-4">
+          <h3 class="font-semibold">Загруженные файлы:</h3>
+          <ul>
+            <li
+              v-for="(file, index) in files"
+              :key="index"
+              class="text-gray-700"
+            >
+              {{ file.name }}
+            </li>
+          </ul>
         </div>
       </div>
 

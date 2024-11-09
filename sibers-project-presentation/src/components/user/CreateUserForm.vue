@@ -3,14 +3,7 @@ import { ref } from 'vue';
 import { UserDto, RoleEnum } from '../../types/user-type';
 import { userApi } from '../../api/user-api.ts';
 
-/*
-const emit = defineEmits(['action-name-1', 'action-name-2', etc.])
-<Component @action-name-1="myEvent(prop)">
- */
-
-const props = defineProps<{
-  onUserCreated: () => void;
-}>();
+const emit = defineEmits(['on-user-create']);
 
 const newUser = ref<UserDto>({
   firstName: '',
@@ -20,14 +13,13 @@ const newUser = ref<UserDto>({
   password: '',
   role: RoleEnum.Employee,
 });
-
 const message = ref<string | null>(null);
 const error = ref<string | null>(null);
 
 const submitForm = async () => {
   try {
     await userApi.createUser(newUser.value);
-    props.onUserCreated();
+    emit('on-user-create');
     message.value = 'Пользователь успешно добавлен!';
     error.value = null;
     resetForm();

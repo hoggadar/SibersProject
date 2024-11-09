@@ -23,7 +23,7 @@ const fetchUsers = async () => {
   }
 };
 
-const handleDeleteUser = async (userToDelete: User) => {
+const handleDelete = async (userToDelete: User) => {
   try {
     await userApi.deleteUser(userToDelete.id);
     users.value = users.value.filter((user) => user.id !== userToDelete.id);
@@ -42,7 +42,9 @@ const handleCancelUpdating = () => {
   selectedUser.value = null;
 };
 
-const onUserCreated = () => fetchUsers();
+const onUserCreated = () => {
+  fetchUsers();
+};
 
 const onUserUpdated = () => {
   isUpdating.value = false;
@@ -59,16 +61,16 @@ onMounted(fetchUsers);
       <UpdateUserForm :user="selectedUser" @on-user-update="onUserUpdated" />
     </div>
     <div v-else>
-      <CreateUserForm :on-user-created="onUserCreated" />
+      <CreateUserForm @on-user-create="onUserCreated" />
     </div>
     <UserList
       :users="users"
       :selected-user-id="selectedUser?.id"
       :loading="loading"
       :error="error"
-      :on-delete="handleDeleteUser"
-      :on-start-updating="handleStartUpdating"
-      :on-cancel-updating="handleCancelUpdating"
+      @delete="handleDelete"
+      @startUpdating="handleStartUpdating"
+      @cancelUpdating="handleCancelUpdating"
     />
   </div>
 </template>

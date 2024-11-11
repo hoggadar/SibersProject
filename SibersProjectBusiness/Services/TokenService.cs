@@ -2,7 +2,6 @@
 using Microsoft.IdentityModel.Tokens;
 using SibersProjectBusiness.DTOs.User;
 using SibersProjectBusiness.Interfaces;
-using SibersProjectDataAccess.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

@@ -31,13 +31,6 @@ const fetchUsers = async () => {
 
 const submitForm = async () => {
   try {
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(newProject.value));
-    files.value.forEach((file) => {
-      formData.append('files', file);
-    });
-    console.log(files);
-
     await projectApi.createProject(newProject.value);
     emit('on-project-create');
     message.value = 'Проект успешно добавлен!';
@@ -109,7 +102,7 @@ onMounted(fetchUsers);
         </div>
       </div>
 
-      <div class="flex flex-col relative">
+      <div class="flex flex-col">
         <div>
           <label for="directorId" class="block">Директор:</label>
           <v-autocomplete
@@ -176,4 +169,4 @@ onMounted(fetchUsers);
   </div>
 </template>
 
-<style scoped></style>
+<style></style>

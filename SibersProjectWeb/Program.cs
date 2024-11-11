@@ -75,6 +75,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
+}
+
 app.UseCors("AllowAllOrigins");
 
 app.UseAuthentication();

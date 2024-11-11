@@ -6,6 +6,7 @@ import LoginView from '../views/LoginView.vue';
 import SignupView from '../views/SignupView.vue';
 import ProjectDetailView from '../views/ProjectDetailView.vue';
 import { useAuthStore } from '../store/authStore.ts';
+import TaskView from '../views/TaskView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -29,6 +30,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'project-users',
     component: ProjectDetailView,
     props: true,
+  },
+  {
+    path: '/task',
+    name: 'task',
+    component: TaskView,
   },
   {
     path: '/login',

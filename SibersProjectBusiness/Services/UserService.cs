@@ -1,4 +1,6 @@
-﻿using SibersProjectBusiness.DTOs.User;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using SibersProjectBusiness.DTOs.User;
 using SibersProjectBusiness.Interfaces;
 using SibersProjectDataAccess.Entities;
 using SibersProjectDataAccess.Enums;
@@ -9,72 +11,70 @@ namespace SibersProjectBusiness.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepo;
+        private readonly IMapper _mapper;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepo)
+        public UserService(IUserRepository userRepo, IMapper mapper, ILogger<UserService> logger)
         {
             _userRepo = userRepo;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        public async Task<IEnumerable<UserEntity>> GetAll()
+        public async Task<IEnumerable<UserDto>> GetAll()
         {
-            return await _userRepo.GetAll();
+            var users = await _userRepo.GetAll();
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public async Task<IEnumerable<UserEntity>> GetUsersByProjectId(long projectId)
+        public async Task<IEnumerable<UserDto>> GetAllByProjectId(long projectId)
         {
-            return await _userRepo.GetUsersByProjectId(projectId);
+            var users = await _userRepo.GetAllByProjectId(projectId);
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public async Task<UserEntity?> GetById(long id)
+        public async Task<UserDto?> GetById(long id)
         {
-            return await _userRepo.GetById(id);
+            var user = await _userRepo.GetById(id);
+            return _mapper.Map<UserDto?>(user);
         }
 
-        public async Task<UserEntity?> GetByEmail(string email)
+        public async Task<UserDto?> GetByEmail(string email)
         {
-            return await _userRepo.GetByEmail(email);
+            var user = await _userRepo.GetByEmail(email);
+            return _mapper.Map<UserDto?>(user);
         }
 
-        public async Task<UserEntity> Create(UserDto dto)
+        public async Task<UserDto> Create(CreateUserDto dto)
         {
-            if (!Enum.TryParse<RoleEnum>(dto.Role, true, out var role))
+            if (!Enum.TryParse<RoleEnum>(dto.Role, true, out var _))
             {
                 throw new ArgumentException($"Invalid role: {dto.Role}");
             }
-            var newUser = new UserEntity
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Patronymic = dto.Patronymic,
-                Email = dto.Email,
-                Password = dto.Password,
-                Role = role
-            };
-            return await _userRepo.Create(newUser);
+            var newUser = _mapper.Map<UserEntity>(dto);
+            var createdUser = await _userRepo.Create(newUser);
+            return _mapper.Map<UserDto>(createdUser);
         }
 
-        public async Task<UserEntity?> Update(long id, UserDto dto)
+        public async Task<UserDto?> Update(long id, UpdateUserDto dto)
         {
-            var user = await _userRepo.GetById(id);
-            if (!Enum.TryParse<RoleEnum>(dto.Role, true, out var role))
+            var existingUser = await _userRepo.GetById(id);
+            if (existingUser == null) return null;
+            if (!Enum.TryParse<RoleEnum>(dto.Role, true, out var _))
             {
                 throw new ArgumentException($"Invalid role: {dto.Role}");
             }
-            if (user == null) return null;
-            user.FirstName = dto.FirstName;
-            user.LastName = dto.LastName;
-            user.Patronymic = dto.Patronymic;
-            user.Email = dto.Email;
-            user.Password = dto.Password;
-            user.Role = role;
-            return await _userRepo.Update(user);
+            var updatedUser = _mapper.Map(dto, existingUser);
+            var result = await _userRepo.Update(updatedUser);
+            return _mapper.Map<UserDto?>(result);
         }
 
-        public async Task<UserEntity?> Delete(long id)
+        public async Task<UserDto?> Delete(long id)
         {
             var user = await _userRepo.GetById(id);
             if (user == null) return null;
-            return await _userRepo.Delete(user);
+            var deletedUser = await _userRepo.Delete(user);
+            return _mapper.Map<UserDto?>(deletedUser);
         }
     }
 }

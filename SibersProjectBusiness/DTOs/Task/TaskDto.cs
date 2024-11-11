@@ -1,11 +1,7 @@
 ﻿namespace SibersProjectBusiness.DTOs.Task
 {
-    public class TaskDto
+    public class TaskDto : BaseTask
     {
-        public string Title { get; set; } = null!;
-        public long AuthorId { get; set; }
-        public long PerformerId { get; set; }
-        public long ProjectId { get; set; }
-        public int Priority { get; set; }
+        public long Id { get; set; }
     }
 }

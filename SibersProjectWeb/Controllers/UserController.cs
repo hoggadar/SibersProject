@@ -23,21 +23,21 @@ namespace SibersProjectWeb.Controllers
         }
 
         [HttpGet("get-users-by-project/{projectId}")]
-        public async Task<IActionResult> GetUsersByProjectId(long projectId)
+        public async Task<IActionResult> GetAllByProject(long projectId)
         {
-            var users = await _userService.GetUsersByProjectId(projectId);
+            var users = await _userService.GetAllByProjectId(projectId);
             return Ok(users);
         }
 
         [HttpPost("create-user")]
-        public async Task<IActionResult> Create([FromBody] UserDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
         {
             var createdUser = await _userService.Create(dto);
             return Ok(createdUser);
         }
 
         [HttpPut("update-user/{id}")]
-        public async Task<IActionResult> Update([FromBody] UserDto dto, long id)
+        public async Task<IActionResult> Update([FromBody] UpdateUserDto dto, long id)
         {
             var updatedUser = await _userService.Update(id, dto);
             if (updatedUser == null) return BadRequest("User not found");

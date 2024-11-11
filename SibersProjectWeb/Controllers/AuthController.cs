@@ -28,7 +28,7 @@ namespace SibersProjectWeb.Controllers
             var user = await _userServices.GetByEmail(dto.Email);
             if (user != null) return BadRequest("User already exists");
             var hashedPassword = _authService.HashPassword(dto.Password);
-            var userDto = new UserDto
+            var userDto = new CreateUserDto
             {
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,

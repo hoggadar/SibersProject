@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SibersProjectBusiness.DTOs.User;
 using SibersProjectBusiness.Interfaces;
 using SibersProjectDataAccess.Entities;
 using System.IdentityModel.Tokens.Jwt;
@@ -67,7 +68,7 @@ namespace SibersProjectBusiness.Services
             }
         }
 
-        public async Task<UserEntity?> GetUserFromExpiredAccessToken(string token)
+        public async Task<UserDto?> GetUserFromExpiredAccessToken(string token)
         {
             ClaimsPrincipal principal = GetPrincipalFromExpiredAccessToken(token);
             Claim emailClaim = principal.Claims.First(x => x.Type == ClaimTypes.Email);

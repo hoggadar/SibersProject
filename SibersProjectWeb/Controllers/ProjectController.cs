@@ -36,20 +36,6 @@ namespace SibersProjectWeb.Controllers
             return Ok(createdUser);
         }
 
-        [HttpPost("add-employee-to-project")]
-        public async Task<IActionResult> AddEmployee([FromBody] UserProjectDto dto)
-        {
-            var result = await _projectService.AddEmployeeToProject(dto);
-            return Ok(result);
-        }
-
-        [HttpPost("remove-employee-from-project")]
-        public async Task<IActionResult> RemoveEmployee([FromBody] UserProjectDto dto)
-        {
-            var result = await _projectService.RemoveEmployeeFromProject(dto);
-            return Ok(result);
-        }
-
         [HttpPut("update-project/{id}")]
         public async Task<IActionResult> Update([FromBody] UpdateProjectDto dto, long id)
         {
@@ -65,5 +51,20 @@ namespace SibersProjectWeb.Controllers
             if (deletedUser == null) return BadRequest("Project not found");
             return Ok(deletedUser);
         }
+
+        [HttpPost("add-employee-to-project")]
+        public async Task<IActionResult> AddEmployee([FromBody] UserProjectDto dto)
+        {
+            var result = await _projectService.AddEmployeeToProject(dto);
+            return Ok(result);
+        }
+
+        [HttpPost("remove-employee-from-project")]
+        public async Task<IActionResult> RemoveEmployee([FromBody] UserProjectDto dto)
+        {
+            var result = await _projectService.RemoveEmployeeFromProject(dto);
+            return Ok(result);
+        }
+
     }
 }

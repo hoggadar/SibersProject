@@ -1,4 +1,6 @@
-﻿using SibersProjectBusiness.DTOs.Project;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using SibersProjectBusiness.DTOs.Project;
 using SibersProjectBusiness.Interfaces;
 using SibersProjectDataAccess.Entities;
 using SibersProjectDataAccess.Repositories.Interfaces;
@@ -9,78 +11,67 @@ namespace SibersProjectBusiness.Services
     {
         private readonly IProjectRepository _projectRepo;
         private readonly IUserProjectRepository _userProjectRepo;
+        private readonly IMapper _mapper;
+        private readonly ILogger<ProjectService> _logger;
 
-        public ProjectService(IProjectRepository projectRepo, IUserProjectRepository userProjectRepo)
+        public ProjectService(IProjectRepository projectRepo, IUserProjectRepository userProjectRepo, IMapper mapper, ILogger<ProjectService> logger)
         {
             _projectRepo = projectRepo;
             _userProjectRepo = userProjectRepo;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        public async Task<IEnumerable<ProjectEntity>> GetAll()
+        public async Task<IEnumerable<ProjectDto>> GetAll()
         {
-            return await _projectRepo.GetAll();
+            var projets = await _projectRepo.GetAll();
+            return _mapper.Map<IEnumerable<ProjectDto>>(projets);
         }
 
-        //public async Task<IEnumerable<ProjectEntity>> GetAllFull()
-        //{
-        //}
-
-        public async Task<IEnumerable<ProjectEntity>> GetAllByDirector(long directorId)
+        public async Task<IEnumerable<ProjectDto>> GetAllByDirector(long directorId)
         {
-            return await _projectRepo.GetAllByDirectorId(directorId);
+            var projects = await _projectRepo.GetAllByDirectorId(directorId);
+            return _mapper.Map<IEnumerable<ProjectDto>>(projects);
         }
 
-        public async Task<ProjectEntity> Create(CreateProjectDto dto)
+        public async Task<ProjectDto> Create(CreateProjectDto dto)
         {
-            var newProject = new ProjectEntity
-            {
-                Title = dto.Title,
-                CustomerCompany = dto.CustomerCompany,
-                PerformerCompany = dto.PerformerCompany,
-                DirectorId = dto.DirectorId,
-                StartDate = DateTime.UtcNow,
-                EndDate = null,
-                Priority = dto.Priority,
-            };
-            return await _projectRepo.Create(newProject);
+            var newProject = _mapper.Map<ProjectEntity>(dto);
+            newProject.StartDate = DateTime.UtcNow;
+            var createdProject = await _projectRepo.Create(newProject);
+            return _mapper.Map<ProjectDto>(createdProject);
         }
 
-        public async Task<ProjectEntity?> Update(long id, UpdateProjectDto dto)
+        public async Task<ProjectDto?> Update(long id, UpdateProjectDto dto)
         {
-            var project = await _projectRepo.GetById(id);
-            if (project == null) return null;
-            project.Title = dto.Title;
-            project.CustomerCompany = dto.CustomerCompany;
-            project.PerformerCompany = dto.PerformerCompany;
-            project.DirectorId = dto.DirectorId;
-            project.Priority = dto.Priority;
-            return await _projectRepo.Update(project);
+            var existingProject = await _projectRepo.GetById(id);
+            if (existingProject == null) return null;
+            var updatedProject = _mapper.Map(dto, existingProject);
+            var result = await _projectRepo.Update(updatedProject);
+            return _mapper.Map<ProjectDto?>(result);
         }
 
-        public async Task<ProjectEntity?> Delete(long id)
+        public async Task<ProjectDto?> Delete(long id)
         {
             var project = await _projectRepo.GetById(id);
             if (project == null) return null;
-            return await _projectRepo.Delete(project);
+            var deletedProject = await _projectRepo.Delete(project);
+            return _mapper.Map<ProjectDto>(deletedProject);
         }
 
-        public async Task<bool> AddEmployeeToProject(UserProjectDto dto)
+        public async Task<UserProjectDto> AddEmployeeToProject(UserProjectDto dto)
         {
-            var newUserProject = new UserProjectEntity
-            {
-                EmployeeId = dto.EmployeeId,
-                ProjectId = dto.ProjectId,
-            };
-            await _userProjectRepo.Create(newUserProject);
-            return true;
+            var newUserProject = _mapper.Map<UserProjectEntity>(dto);
+            var createdUserProject = await _userProjectRepo.Create(newUserProject);
+            return _mapper.Map<UserProjectDto>(createdUserProject);
         }
 
-        public async Task<bool> RemoveEmployeeFromProject(UserProjectDto dto)
+        public async Task<UserProjectDto?> RemoveEmployeeFromProject(UserProjectDto dto)
         {
             var userProject = await _userProjectRepo.GetByUserAndProject(dto.EmployeeId, dto.ProjectId);
-            if (userProject == null) return false;
-            await _userProjectRepo.Delete(userProject);
-            return true;
+            if (userProject == null) return null;
+            var deletedUserProject = await _userProjectRepo.Delete(userProject);
+            return _mapper.Map<UserProjectDto>(deletedUserProject);
         }
     }
 }

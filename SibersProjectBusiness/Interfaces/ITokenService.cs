@@ -1,4 +1,4 @@
-﻿using SibersProjectDataAccess.Entities;
+﻿using SibersProjectBusiness.DTOs.User;
 using System.Security.Claims;
 
 namespace SibersProjectBusiness.Interfaces
@@ -7,6 +7,6 @@ namespace SibersProjectBusiness.Interfaces
     {
         string GenerateAccessToken(IEnumerable<Claim> claims);
         ClaimsPrincipal GetPrincipalFromExpiredAccessToken(string token);
-        Task<UserEntity?> GetUserFromExpiredAccessToken(string token);
+        Task<UserDto?> GetUserFromExpiredAccessToken(string token);
     }
 }

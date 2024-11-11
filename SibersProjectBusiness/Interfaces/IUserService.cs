@@ -1,16 +1,15 @@
 ﻿using SibersProjectBusiness.DTOs.User;
-using SibersProjectDataAccess.Entities;
 
 namespace SibersProjectBusiness.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserEntity>> GetAll();
-        Task<IEnumerable<UserEntity>> GetUsersByProjectId(long projectId);
-        Task<UserEntity?> GetById(long id);
-        Task<UserEntity?> GetByEmail(string email);
-        Task<UserEntity> Create(UserDto dto);
-        Task<UserEntity?> Update(long id, UserDto dto);
-        Task<UserEntity?> Delete(long id);
+        Task<IEnumerable<UserDto>> GetAll();
+        Task<IEnumerable<UserDto>> GetAllByProjectId(long projectId);
+        Task<UserDto?> GetById(long id);
+        Task<UserDto?> GetByEmail(string email);
+        Task<UserDto> Create(CreateUserDto dto);
+        Task<UserDto?> Update(long id, UpdateUserDto dto);
+        Task<UserDto?> Delete(long id);
     }
 }

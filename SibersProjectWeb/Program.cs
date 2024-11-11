@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SibersProjectBusiness.Interfaces;
+using SibersProjectBusiness.Mappers;
 using SibersProjectBusiness.Services;
 using SibersProjectDataAccess.Data;
 using SibersProjectDataAccess.Repositories.Implementations;
@@ -58,6 +59,13 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(ProjectProfile));
+builder.Services.AddAutoMapper(typeof(TaskProfile));
+builder.Services.AddAutoMapper(typeof(UserProjectProfile));
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 

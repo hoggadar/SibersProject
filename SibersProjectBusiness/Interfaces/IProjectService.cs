@@ -5,13 +5,12 @@ namespace SibersProjectBusiness.Interfaces
 {
     public interface IProjectService
     {
-        Task<IEnumerable<ProjectEntity>> GetAll();
-        //Task<IEnumerable<ProjectEntity>> GetAllFull();
-        Task<IEnumerable<ProjectEntity>> GetAllByDirector(long directorId);
-        Task<ProjectEntity> Create(CreateProjectDto dto);
-        Task<ProjectEntity?> Update(long id, UpdateProjectDto dto);
-        Task<ProjectEntity?> Delete(long id);
-        Task<bool> AddEmployeeToProject(UserProjectDto dto);
-        Task<bool> RemoveEmployeeFromProject(UserProjectDto dto);
+        Task<IEnumerable<ProjectDto>> GetAll();
+        Task<IEnumerable<ProjectDto>> GetAllByDirector(long directorId);
+        Task<ProjectDto> Create(CreateProjectDto dto);
+        Task<ProjectDto?> Update(long id, UpdateProjectDto dto);
+        Task<ProjectDto?> Delete(long id);
+        Task<UserProjectDto> AddEmployeeToProject(UserProjectDto dto);
+        Task<UserProjectDto?> RemoveEmployeeFromProject(UserProjectDto dto);
     }
 }

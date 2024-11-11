@@ -9,7 +9,7 @@ namespace SibersProjectDataAccess.Repositories.Implementations
     {
         public UserRepository(AppDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<UserEntity>> GetUsersByProjectId(long projectId)
+        public async Task<IEnumerable<UserEntity>> GetAllByProjectId(long projectId)
         {
             var users = await _context.UserProjects
             .Where(up => up.ProjectId == projectId)

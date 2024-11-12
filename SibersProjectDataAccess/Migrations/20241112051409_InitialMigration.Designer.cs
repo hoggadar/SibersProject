@@ -12,8 +12,8 @@ using SibersProjectDataAccess.Data;
 namespace SibersProjectDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241108081205_UpdateCascadeDeleteForProject")]
-    partial class UpdateCascadeDeleteForProject
+    [Migration("20241112051409_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,35 @@ namespace SibersProjectDataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("SibersProjectDataAccess.Entities.ProjectDocumentEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectDocuments");
+                });
 
             modelBuilder.Entity("SibersProjectDataAccess.Entities.ProjectEntity", b =>
                 {
@@ -161,6 +190,17 @@ namespace SibersProjectDataAccess.Migrations
                     b.ToTable("UserProjects");
                 });
 
+            modelBuilder.Entity("SibersProjectDataAccess.Entities.ProjectDocumentEntity", b =>
+                {
+                    b.HasOne("SibersProjectDataAccess.Entities.ProjectEntity", "Project")
+                        .WithMany("Documents")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("SibersProjectDataAccess.Entities.ProjectEntity", b =>
                 {
                     b.HasOne("SibersProjectDataAccess.Entities.UserEntity", "Director")
@@ -204,13 +244,13 @@ namespace SibersProjectDataAccess.Migrations
                     b.HasOne("SibersProjectDataAccess.Entities.UserEntity", "Employee")
                         .WithMany("EmployeeProjects")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SibersProjectDataAccess.Entities.ProjectEntity", "Project")
                         .WithMany("EmployeeProjects")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Employee");
@@ -220,6 +260,8 @@ namespace SibersProjectDataAccess.Migrations
 
             modelBuilder.Entity("SibersProjectDataAccess.Entities.ProjectEntity", b =>
                 {
+                    b.Navigation("Documents");
+
                     b.Navigation("EmployeeProjects");
 
                     b.Navigation("Tasks");

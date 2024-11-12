@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SibersProjectBusiness.DTOs.Project;
 using SibersProjectBusiness.Interfaces;
+using SibersProjectBusiness.Services;
+using SibersProjectDataAccess.Entities;
 
 namespace SibersProjectWeb.Controllers
 {
@@ -9,10 +11,12 @@ namespace SibersProjectWeb.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        private readonly IFileService _fileService;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService, IFileService fileService)
         {
             _projectService = projectService;
+            _fileService = fileService;
         }
 
         [HttpGet("get-all-projects")]
@@ -52,6 +56,22 @@ namespace SibersProjectWeb.Controllers
             return Ok(deletedUser);
         }
 
+        [HttpPost("upload-documents/{id}")]
+        public async Task<IActionResult> UploadDocument(long id, IFormFileCollection files)
+        {
+            if (files == null || files.Count == 0) return BadRequest("No files uploaded");
+            try
+            {
+                var uploadedDocuments = await _fileService.UploadFilesAsync(id, files);
+                var createdDocuments = await _projectService.AddDocuments(uploadedDocuments);
+                return Ok(createdDocuments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("add-employee-to-project")]
         public async Task<IActionResult> AddEmployee([FromBody] UserProjectDto dto)
         {
@@ -65,6 +85,5 @@ namespace SibersProjectWeb.Controllers
             var result = await _projectService.RemoveEmployeeFromProject(dto);
             return Ok(result);
         }
-
     }
 }

@@ -18,5 +18,14 @@ namespace SibersProjectDataAccess.Repositories.Implementations
         {
             return await _context.Projects.FirstOrDefaultAsync(x => x.Title == title);
         }
+
+        public async Task<IEnumerable<ProjectDocumentEntity>> AddDocuments(IEnumerable<ProjectDocumentEntity> documents)
+        {
+            await _context.ProjectDocuments.AddRangeAsync(documents);
+            await _context.SaveChangesAsync();
+            return await _context.ProjectDocuments
+                .Where(pd => documents.Select(d => d.Id).Contains(pd.Id))
+                .ToListAsync();
+        }
     }
 }

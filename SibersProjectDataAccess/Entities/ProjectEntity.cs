@@ -13,5 +13,6 @@
         public int Priority { get; set; }
         public ICollection<UserProjectEntity>? EmployeeProjects { get; set; }
         public ICollection<TaskEntity>? Tasks { get; set; }
+        public ICollection<ProjectDocumentEntity>? Documents { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace SibersProjectDataAccess.Data
         public DbSet<ProjectEntity> Projects { get; set; }
         public DbSet<UserProjectEntity> UserProjects { get; set; }
         public DbSet<TaskEntity> Tasks { get; set; }
+        public DbSet<ProjectDocumentEntity> ProjectDocuments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,13 +19,13 @@ namespace SibersProjectDataAccess.Data
                 .HasOne(up => up.Employee)
                 .WithMany(u => u.EmployeeProjects)
                 .HasForeignKey(up => up.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserProjectEntity>()
                 .HasOne(up => up.Project)
                 .WithMany(p => p.EmployeeProjects)
                 .HasForeignKey(up => up.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TaskEntity>()
                 .HasOne(t => t.Author)
@@ -43,6 +44,12 @@ namespace SibersProjectDataAccess.Data
                 .WithMany(p => p.Tasks)
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ProjectDocumentEntity>()
+                .HasOne(pd => pd.Project)
+                .WithMany(p => p.Documents)
+                .HasForeignKey(pd => pd.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

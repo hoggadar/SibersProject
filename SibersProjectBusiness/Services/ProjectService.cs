@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using SibersProjectBusiness.DTOs.Document;
 using SibersProjectBusiness.DTOs.Project;
 using SibersProjectBusiness.Interfaces;
 using SibersProjectDataAccess.Entities;
@@ -57,6 +58,12 @@ namespace SibersProjectBusiness.Services
             if (project == null) return null;
             var deletedProject = await _projectRepo.Delete(project);
             return _mapper.Map<ProjectDto>(deletedProject);
+        }
+
+        public async Task<IEnumerable<DocumentDto>> AddDocuments(IEnumerable<ProjectDocumentEntity> documents)
+        {
+            var createdDocuments = await _projectRepo.AddDocuments(documents);
+            return _mapper.Map<IEnumerable<DocumentDto>>(createdDocuments);
         }
 
         public async Task<UserProjectDto> AddEmployeeToProject(UserProjectDto dto)

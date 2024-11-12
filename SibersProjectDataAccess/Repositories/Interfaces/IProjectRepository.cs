@@ -6,5 +6,6 @@ namespace SibersProjectDataAccess.Repositories.Interfaces
     {
         Task<IEnumerable<ProjectEntity>> GetAllByDirectorId(long directorId);
         Task<ProjectEntity?> GetByTitle(string title);
+        Task<IEnumerable<ProjectDocumentEntity>> AddDocuments(IEnumerable<ProjectDocumentEntity> documents);
     }
 }

@@ -31,9 +31,13 @@ const fetchUsers = async () => {
 
 const submitForm = async () => {
   try {
-    await projectApi.createProject(newProject.value);
+    const projectResponse = await projectApi.createProject(newProject.value);
     emit('on-project-create');
     message.value = 'Проект успешно добавлен!';
+    if (files.value.length > 0) {
+      await projectApi.uploadFiles(projectResponse.id, files.value);
+      message.value = 'Файлы успешно загружены!';
+    }
     error.value = null;
     resetForm();
   } catch (err) {
@@ -131,18 +135,19 @@ onMounted(fetchUsers);
         </div>
       </div>
 
-      <div class="col-span-2">
+      <div class="flex flex-col col-span-2">
         <label class="block">Загрузить PDF файлы:</label>
-        <div>
-          <div v-bind="getRootProps()">
-            <input v-bind="getInputProps()" />
-            <p v-if="isDragActive">Drop the files here ...</p>
-            <p v-else>
-              Drag 'n' drop some files here, or click to select files
-            </p>
-          </div>
-          <button @click="open">Open</button>
+        <div
+          v-bind="getRootProps()"
+          class="border border-dashed border-gray-400 rounded p-4"
+        >
+          <input v-bind="getInputProps()" />
+          <p v-if="isDragActive">Drop the files here ...</p>
+          <p v-else>Drag 'n' drop some files here, or click to select files</p>
         </div>
+        <button @click.prevent="open" class="mt-2 text-blue-500">
+          Выбрать файлы
+        </button>
         <div class="col-span-2 mt-4">
           <h3 class="font-semibold">Загруженные файлы:</h3>
           <ul>

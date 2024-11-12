@@ -12,5 +12,7 @@ export interface SignupDto {
 }
 
 export interface TokenDto {
-  token: string;
+  id: string;
+  accessToken: string;
+  role: string;
 }

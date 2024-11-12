@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { taskApi } from '../../api/task-api.ts';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { StatusEnum, TaskDto } from '../../types/task-type.ts';
 import { Project } from '../../types/project-type.ts';
 import { projectApi } from '../../api/project-api.ts';
 import { User } from '../../types/user-type.ts';
 import { userApi } from '../../api/user-api.ts';
+import { useAuthStore } from '../../store/authStore.ts';
 
 const emit = defineEmits(['on-task-create']);
 
@@ -17,6 +18,7 @@ const newTask = ref<TaskDto>({
   priority: 1,
   status: StatusEnum.Todo,
 });
+
 const projects = ref<Project[]>([]);
 const users = ref<User[]>([]);
 const message = ref<string | null>(null);
@@ -115,7 +117,7 @@ onMounted(() => {
           <label for="projectId" class="block">ID проекта:</label>
           <v-autocomplete
             v-model="newTask.projectId"
-            label="Выберите директора"
+            label="Выберите проект "
             required
             :items="projects"
             :item-title="'title'"

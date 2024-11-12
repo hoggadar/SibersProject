@@ -14,6 +14,11 @@ namespace SibersProjectDataAccess.Repositories.Implementations
             return await _context.Tasks.Where(x => x.PerformerId == employeeId).ToListAsync();
         }
 
+        public async Task<IEnumerable<TaskEntity>> GetAllByAuthorId(long authorId)
+        {
+            return await _context.Tasks.Where(x => x.AuthorId == authorId).ToListAsync();
+        }
+
         public async Task<TaskEntity?> GetByTitle(string title)
         {
             return await _context.Tasks.FirstOrDefaultAsync(x => x.Title == title);

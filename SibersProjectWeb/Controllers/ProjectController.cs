@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SibersProjectBusiness.DTOs.Project;
 using SibersProjectBusiness.Interfaces;
-using SibersProjectBusiness.Services;
-using SibersProjectDataAccess.Entities;
 
 namespace SibersProjectWeb.Controllers
 {
@@ -19,6 +18,7 @@ namespace SibersProjectWeb.Controllers
             _fileService = fileService;
         }
 
+        [Authorize]
         [HttpGet("get-all-projects")]
         public async Task<IActionResult> GetAll()
         {
@@ -26,6 +26,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(projects);
         }
 
+        [Authorize(Roles = "Director,ProjectManager")]
         [HttpGet("get-all-projects/{directorId}")]
         public async Task<IActionResult> GetAllByDirector(long directorId)
         {
@@ -33,6 +34,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(projects);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpPost("create-project")]
         public async Task<IActionResult> Create([FromBody] CreateProjectDto dto)
         {
@@ -40,6 +42,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(createdUser);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpPut("update-project/{id}")]
         public async Task<IActionResult> Update([FromBody] UpdateProjectDto dto, long id)
         {
@@ -48,6 +51,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(updatedUser);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpDelete("delete-project/{id}")]
         public async Task<IActionResult> Delete(long id)
         {
@@ -56,6 +60,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(deletedUser);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpPost("upload-documents/{id}")]
         public async Task<IActionResult> UploadDocument(long id, IFormFileCollection files)
         {
@@ -72,6 +77,7 @@ namespace SibersProjectWeb.Controllers
             }
         }
 
+        [Authorize(Roles = "Director,ProjectManager")]
         [HttpPost("add-employee-to-project")]
         public async Task<IActionResult> AddEmployee([FromBody] UserProjectDto dto)
         {
@@ -79,6 +85,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Director,ProjectManager")]
         [HttpPost("remove-employee-from-project")]
         public async Task<IActionResult> RemoveEmployee([FromBody] UserProjectDto dto)
         {

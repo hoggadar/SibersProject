@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { projectApi } from '../api/project-api.ts';
 import { Project } from '../types/project-type';
 import ProjectList from '../components/project/ProjectList.vue';
 import UpdateProjectForm from '../components/project/UpdateProjectForm.vue';
 import CreateProjectForm from '../components/project/CreateProjectForm.vue';
+import { useAuthStore } from '../store/authStore.ts';
 
+const authStore = useAuthStore();
+const isDirector = computed(() => authStore.role === 'Director');
 const projects = ref<Project[]>([]);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
@@ -59,14 +62,16 @@ onMounted(fetchProjects);
 
 <template>
   <div class="p-6">
-    <div v-if="isUpdating && selectedProject">
-      <UpdateProjectForm
-        :project="selectedProject"
-        @on-project-update="onProjectUpdated"
-      />
-    </div>
-    <div v-else>
-      <CreateProjectForm @on-project-create="onProjectCreated" />
+    <div v-if="isDirector">
+      <div v-if="isUpdating && selectedProject">
+        <UpdateProjectForm
+          :project="selectedProject"
+          @on-project-update="onProjectUpdated"
+        />
+      </div>
+      <div v-else>
+        <CreateProjectForm @on-project-create="onProjectCreated" />
+      </div>
     </div>
     <ProjectList
       :projects="projects"

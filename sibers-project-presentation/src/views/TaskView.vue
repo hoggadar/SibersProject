@@ -5,17 +5,27 @@ import { taskApi } from '../api/task-api.ts';
 import TaskList from '../components/task/TaskList.vue';
 import CreateTaskForm from '../components/task/CreateTaskForm.vue';
 import UpdateTaskForm from '../components/task/UpdateTaskForm.vue';
+import { useAuthStore } from '../store/authStore.ts';
 
 const tasks = ref<Task[]>([]);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const isUpdating = ref<boolean>(false);
 const selectedTask = ref<Task | null>(null);
+const authStore = useAuthStore();
 
 const fetchTasks = async () => {
   loading.value = true;
   try {
-    tasks.value = await taskApi.getAllTasks();
+    const userRole = authStore.role;
+    const userId = Number(authStore.id);
+    if (userRole === 'Director') {
+      tasks.value = await taskApi.getAllTasks();
+    } else if (userRole === 'ProjectManager') {
+      tasks.value = await taskApi.getTasksByAuthorId(userId);
+    } else if (userRole === 'Employee') {
+      tasks.value = await taskApi.getTasksByEmployeeId(userId);
+    }
   } catch (err) {
     error.value = 'Не удалось загрузить задачи.';
   } finally {
@@ -61,7 +71,13 @@ onMounted(fetchTasks);
       <UpdateTaskForm :task="selectedTask" @on-task-update="onTaskUpdated" />
     </div>
     <div v-else>
-      <CreateTaskForm @on-task-create="onTaskCreated" />
+      <div
+        v-if="
+          authStore.role === 'Director' || authStore.role === 'ProjectManager'
+        "
+      >
+        <CreateTaskForm @on-task-create="onTaskCreated" />
+      </div>
     </div>
     <TaskList
       :tasks="tasks"

@@ -12,6 +12,11 @@ export const taskApi = {
       `/Task/get-tasks-by-employee/${employeeId}`
     ).then((response) => response.data);
   },
+  async getTasksByAuthorId(authorId: number): Promise<Task[]> {
+    return await BASE_API.get<Task[]>(
+      `/Task/get-tasks-by-author/${authorId}`
+    ).then((response) => response.data);
+  },
   async createTask(newTask: TaskDto): Promise<Task> {
     return await BASE_API.post<Task>('/Task/create-task', newTask).then(
       (response) => response.data

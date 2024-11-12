@@ -7,8 +7,18 @@ import SignupView from '../views/SignupView.vue';
 import ProjectDetailView from '../views/ProjectDetailView.vue';
 import { useAuthStore } from '../store/authStore.ts';
 import TaskView from '../views/TaskView.vue';
+import AccessDenied from '../components/auth/AccessDenied.vue';
 
-const routes: Array<RouteRecordRaw> = [
+interface RouteMeta {
+  requiresAuth?: boolean;
+  allowedRoles?: string[];
+}
+
+type ExtendedRouteRecordRaw = RouteRecordRaw & {
+  meta?: RouteMeta;
+};
+
+const routes: Array<ExtendedRouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
@@ -19,22 +29,35 @@ const routes: Array<RouteRecordRaw> = [
     path: '/user',
     name: 'user',
     component: UserView,
+    meta: { requiresAuth: true, allowedRoles: ['Director'] },
   },
   {
     path: '/project',
     name: 'project',
     component: ProjectView,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['Director', 'ProjectManager', 'Employee'],
+    },
   },
   {
     path: '/project/:projectId',
     name: 'project-users',
     component: ProjectDetailView,
     props: true,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['Director', 'ProjectManager', 'Employee'],
+    },
   },
   {
     path: '/task',
     name: 'task',
     component: TaskView,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['Director', 'ProjectManager', 'Employee'],
+    },
   },
   {
     path: '/login',
@@ -45,6 +68,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/signup',
     name: 'signup',
     component: SignupView,
+  },
+  {
+    path: '/access-denied',
+    name: 'AccessDenied',
+    component: AccessDenied,
   },
 ];
 
@@ -57,6 +85,12 @@ router.beforeEach((to, _, next) => {
   const authStore = useAuthStore();
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'login' });
+  } else if (to.meta.allowedRoles && Array.isArray(to.meta.allowedRoles)) {
+    if (to.meta.allowedRoles.includes(authStore.role)) {
+      next();
+    } else {
+      next({ name: 'AccessDenied' });
+    }
   } else {
     next();
   }

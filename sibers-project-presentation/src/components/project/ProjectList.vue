@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Project } from '../../types/project-type';
+import { useAuthStore } from '../../store/authStore.ts';
+import { computed } from 'vue';
 
 interface IProps {
   selectedProjectId: number | undefined;
@@ -15,6 +17,10 @@ const emit = defineEmits<{
   (e: 'start-updating', project: Project): void;
   (e: 'cancel-updating'): void;
 }>();
+
+const authStore = useAuthStore();
+const isDirector = computed(() => authStore.role === 'Director');
+const isProjectManager = computed(() => authStore.role === 'ProjectManager');
 
 const startUpdating = (project: Project) => {
   emit('start-updating', project);
@@ -44,7 +50,12 @@ const cancelUpdating = () => {
           <th class="py-2 px-4 text-center">Дата начала</th>
           <th class="py-2 px-4 text-center">Дата окончания</th>
           <th class="py-2 px-4 text-center">Приоритет</th>
-          <th class="py-2 px-4 text-center">Действия</th>
+          <th
+            v-if="isDirector || isProjectManager"
+            class="py-2 px-4 text-center"
+          >
+            Действия
+          </th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
@@ -65,7 +76,10 @@ const cancelUpdating = () => {
             {{ new Date(project.endDate).toLocaleDateString() }}
           </td>
           <td class="py-2 px-4">{{ project.priority }}</td>
-          <td class="py-2 px-4 w-[420px] flex justify-center">
+          <td
+            v-if="isDirector || isProjectManager"
+            class="py-2 px-4 w-[420px] flex justify-center"
+          >
             <div v-if="selectedProjectId === project.id">
               <button
                 @click="cancelUpdating()"
@@ -82,6 +96,7 @@ const cancelUpdating = () => {
                 Подробнее
               </router-link>
               <button
+                v-if="isDirector"
                 :disabled="!!selectedProjectId"
                 @click="startUpdating(project)"
                 class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded"
@@ -89,6 +104,7 @@ const cancelUpdating = () => {
                 Редактировать
               </button>
               <button
+                v-if="isDirector"
                 :disabled="!!selectedProjectId"
                 @click="() => emit('delete', project)"
                 class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

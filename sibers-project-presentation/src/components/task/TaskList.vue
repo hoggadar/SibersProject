@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Task } from '../../types/task-type.ts';
+import { useAuthStore } from '../../store/authStore.ts';
+import { computed } from 'vue';
 
 interface IProps {
   selectedTaskId: number | undefined;
@@ -15,6 +17,9 @@ const emit = defineEmits<{
   (e: 'start-updating', task: Task): void;
   (e: 'cancel-updating'): void;
 }>();
+
+const authStore = useAuthStore();
+const isEmployee = computed(() => authStore.role === 'Employee');
 
 const startUpdating = (task: Task) => {
   emit('start-updating', task);
@@ -77,6 +82,7 @@ const cancelUpdating = () => {
                 Редактировать
               </button>
               <button
+                v-if="!isEmployee"
                 :disabled="!!selectedTaskId"
                 @click="() => emit('delete', task)"
                 class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

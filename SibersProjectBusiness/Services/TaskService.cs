@@ -33,6 +33,12 @@ namespace SibersProjectBusiness.Services
             return _mapper.Map<IEnumerable<TaskDto>>(tasks);
         }
 
+        public async Task<IEnumerable<TaskDto>> GetAllByAuthorId(long id)
+        {
+            var tasks = await _taskRepo.GetAllByAuthorId(id);
+            return _mapper.Map<IEnumerable<TaskDto>>(tasks);
+        }
+
         public async Task<TaskDto?> GetById(long id)
         {
             var task = await _taskRepo.GetById(id);

@@ -7,8 +7,13 @@ export const authApi = {
     const authStore = useAuthStore();
     try {
       const response = await BASE_API.post<TokenDto>('/Auth/login', dto);
-      const token = response.data.token;
+      const token = response.data.accessToken;
+      const role = response.data.role;
+      const id = response.data.id;
       authStore.setToken(token);
+      authStore.setRole(role);
+      authStore.setId(id);
+      console.log(response);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -18,8 +23,12 @@ export const authApi = {
     const authStore = useAuthStore();
     try {
       const response = await BASE_API.post<TokenDto>('/Auth/signup', dto);
-      const token = response.data.token;
+      const token = response.data.accessToken;
+      const role = response.data.role;
+      const id = response.data.id;
       authStore.setToken(token);
+      authStore.setRole(role);
+      authStore.setId(id);
     } catch (error) {
       console.error('Signup error:', error);
       throw error;

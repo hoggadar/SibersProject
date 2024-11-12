@@ -7,6 +7,7 @@ namespace SibersProjectBusiness.Interfaces
     {
         Task<IEnumerable<TaskDto>> GetAll();
         Task<IEnumerable<TaskDto>> GetAllByEmployeeId(long id);
+        Task<IEnumerable<TaskDto>> GetAllByAuthorId(long id);
         Task<TaskDto?> GetById(long id);
         Task<TaskDto> Create(CreateTaskDto dto);
         Task<TaskDto?> Update(long id, UpdateTaskDto dto);

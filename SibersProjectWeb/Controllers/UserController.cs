@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SibersProjectBusiness.DTOs.User;
 using SibersProjectBusiness.Interfaces;
 
@@ -15,6 +16,7 @@ namespace SibersProjectWeb.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         [HttpGet("get-all-users")]
         public async Task<IActionResult> GetAll()
         {
@@ -22,6 +24,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = "Director,ProjectManager")]
         [HttpGet("get-users-by-project/{projectId}")]
         public async Task<IActionResult> GetAllByProject(long projectId)
         {
@@ -29,6 +32,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpPost("create-user")]
         public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
         {
@@ -36,6 +40,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(createdUser);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpPut("update-user/{id}")]
         public async Task<IActionResult> Update([FromBody] UpdateUserDto dto, long id)
         {
@@ -44,6 +49,7 @@ namespace SibersProjectWeb.Controllers
             return Ok(updatedUser);
         }
 
+        [Authorize(Roles = "Director")]
         [HttpDelete("delete-user/{id}")]
         public async Task<IActionResult> Delete(long id)
         {

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { taskApi } from '../../api/task-api.ts';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { userApi } from '../../api/user-api.ts';
 import { projectApi } from '../../api/project-api.ts';
 import { User } from '../../types/user-type.ts';
 import { Project } from '../../types/project-type.ts';
 import { StatusEnum, TaskDto } from '../../types/task-type.ts';
+import { useAuthStore } from '../../store/authStore.ts';
 
 const props = defineProps<{
   task: TaskDto;
@@ -22,6 +23,8 @@ const updatedTask = ref<TaskDto>({
   status: StatusEnum.Todo,
 });
 
+const authStore = useAuthStore();
+const isEmployee = computed(() => authStore.role === 'Employee');
 const projects = ref<Project[]>([]);
 const users = ref<User[]>([]);
 const message = ref<string | null>(null);
@@ -90,6 +93,7 @@ onMounted(() => {
             id="title"
             required
             class="w-full border border-gray-300 rounded px-3 py-2"
+            :disabled="isEmployee"
           />
         </div>
 
@@ -102,6 +106,7 @@ onMounted(() => {
             :items="users"
             :item-title="'email'"
             :item-value="'id'"
+            :disabled="isEmployee"
           />
         </div>
 
@@ -114,6 +119,7 @@ onMounted(() => {
             :items="users"
             :item-title="'email'"
             :item-value="'id'"
+            :disabled="isEmployee"
           />
         </div>
       </div>
@@ -128,6 +134,7 @@ onMounted(() => {
             :items="projects"
             :item-title="'title'"
             :item-value="'id'"
+            :disabled="isEmployee"
           />
         </div>
 
@@ -137,6 +144,7 @@ onMounted(() => {
             v-model.number="updatedTask.priority"
             id="priority"
             class="w-full border border-gray-300 rounded px-3 py-2"
+            :disabled="isEmployee"
           >
             <option value="1">1 (Низкий)</option>
             <option value="2">2</option>

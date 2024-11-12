@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SibersProjectBusiness.DTOs.Auth;
 using SibersProjectBusiness.DTOs.User;
 using SibersProjectBusiness.Interfaces;
@@ -44,7 +45,13 @@ namespace SibersProjectWeb.Controllers
                 new Claim(ClaimTypes.Role, createdUser.Role.ToString())
             };
             string accessToken = _tokenService.GenerateAccessToken(claims);
-            return Ok(new { accessToken });
+            var response = new AuthResponseDto
+            {
+                Id = createdUser.Id,
+                AccessToken = accessToken,
+                Role = createdUser.Role
+            };
+            return Ok(response);
         }
 
         [HttpPost("login")]
@@ -61,7 +68,13 @@ namespace SibersProjectWeb.Controllers
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
             string accessToken = _tokenService.GenerateAccessToken(claims);
-            return Ok(new { accessToken });
+            var response = new AuthResponseDto
+            {
+                Id = user.Id,
+                AccessToken = accessToken,
+                Role = user.Role
+            };
+            return Ok(response);
         }
     }
 }

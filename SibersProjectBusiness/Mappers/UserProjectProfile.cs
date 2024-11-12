@@ -9,6 +9,7 @@ namespace SibersProjectBusiness.Mappers
         public UserProjectProfile()
         {
             CreateMap<UserProjectDto, UserProjectEntity>();
+            CreateMap<UserProjectEntity, UserProjectDto>();
         }
     }
 }

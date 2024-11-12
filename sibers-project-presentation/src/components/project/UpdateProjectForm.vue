@@ -4,6 +4,7 @@ import { projectApi } from '../../api/project-api.ts';
 import { onMounted, ref, watch } from 'vue';
 import { User } from '../../types/user-type.ts';
 import { userApi } from '../../api/user-api.ts';
+import { useDropzone } from 'vue3-dropzone';
 
 const props = defineProps<{
   project: ProjectDto;
@@ -19,6 +20,7 @@ const updatedProject = ref<UpdateProjectDto>({
   priority: 0,
 });
 const users = ref<User[]>([]);
+const files = ref<File[]>([]);
 const message = ref<string | null>(null);
 const error = ref<string | null>(null);
 
@@ -48,8 +50,13 @@ watch(
 const submitForm = async () => {
   try {
     await projectApi.updateProject(props.project.id, updatedProject.value);
+    if (files.value.length > 0) {
+      await projectApi.uploadFiles(props.project.id, files.value);
+      message.value = 'Проект успешно обновлен и файлы загружены!';
+    } else {
+      message.value = 'Проект успешно обновлен!';
+    }
     emit('on-project-update');
-    message.value = 'Проект успешно обновлен!';
     error.value = null;
     resetForm();
   } catch (err) {
@@ -66,7 +73,14 @@ const resetForm = () => {
     directorId: 0,
     priority: 1,
   };
+  files.value = [];
 };
+
+const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+  onDrop: (acceptedFiles) => {
+    files.value.push(...acceptedFiles);
+  },
+});
 
 onMounted(fetchUsers);
 </script>
@@ -137,6 +151,33 @@ onMounted(fetchUsers);
             <option value="4">4</option>
             <option value="5">5 (Высокий)</option>
           </select>
+        </div>
+      </div>
+
+      <div class="flex flex-col col-span-2">
+        <label class="block">Загрузить PDF файлы:</label>
+        <div
+          v-bind="getRootProps()"
+          class="border border-dashed border-gray-400 rounded p-4"
+        >
+          <input v-bind="getInputProps()" />
+          <p v-if="isDragActive">Drop the files here ...</p>
+          <p v-else>Drag 'n' drop some files here, or click to select files</p>
+        </div>
+        <button @click.prevent="open" class="mt-2 text-blue-500">
+          Выбрать файлы
+        </button>
+        <div class="col-span-2 mt-4">
+          <h3 class="font-semibold">Загруженные файлы:</h3>
+          <ul>
+            <li
+              v-for="(file, index) in files"
+              :key="index"
+              class="text-gray-700"
+            >
+              {{ file.name }}
+            </li>
+          </ul>
         </div>
       </div>
 
